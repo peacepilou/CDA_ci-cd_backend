@@ -10,4 +10,4 @@ spring:
       ddl-auto: create-drop
 
 cors:
-  allowedOrigins: ${CLIENT_URL_DEV}
+  allowedOrigins: "*"
