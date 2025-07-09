@@ -1,7 +1,7 @@
 # Ignorer les fichiers à la raçine du projet
 /*.json
 /*.md
-docker-compose.yml
+docker-compose.e2e.yml
 Dockerfile
 mvnw
 mvnw.cmd

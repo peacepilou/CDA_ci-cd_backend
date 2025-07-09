@@ -10,10 +10,7 @@
     <module name="TreeWalker">
 
         <module name="ParameterNumber">
-            <property name="max" value="3"/>
-        </module>
-        <module name="MagicNumber">
-            <property name="ignoreNumbers" value="0,1,-1"/>
+            <property name="max" value="10"/>
         </module>
         <module name="OneStatementPerLine">
             <property name="treatTryResourcesAsStatement" value="true"/>

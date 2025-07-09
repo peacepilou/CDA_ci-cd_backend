@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-e2e
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME_E2E}
+      MYSQL_USER: ${DB_USER_E2E}
+      MYSQL_PASSWORD: ${DB_PASSWORD_E2E}
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "${DB_PORT_E2E}:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mysql-e2e-data:/var/lib/mysql
+
+  app:
+    build:
+      context: .
+    container_name: springboot-e2e
+    ports:
+      - "${APP_PORT_E2E}:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE_E2E}
+      DB_HOST_E2E: mysql
+      DB_PORT_E2E: 3306
+      DB_NAME_E2E: ${DB_NAME_E2E}
+      DB_USER_E2E: ${DB_USER_E2E}
+      DB_PASSWORD_E2E: ${DB_PASSWORD_E2E}
+
+volumes:
+  mysql-e2e-data:

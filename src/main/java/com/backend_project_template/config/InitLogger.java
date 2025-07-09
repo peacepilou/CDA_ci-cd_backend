@@ -40,33 +40,31 @@ public class InitLogger {
   }
 
   public void logCurrentEnvironment(ApplicationContext context) {
-    echoSeparator();
-    echoGreen("✨ Starting server for Environment: " + getEnvironment(context));
-    echoSeparator();
-  }
-
-  private String getEnvironment(ApplicationContext context) {
     String[] activeProfiles = context.getEnvironment().getActiveProfiles();
-    if (activeProfiles.length == 0) {
-      return "development";
-    } else {
-      String environment = String.join(", ", activeProfiles);
-      verifyEnvironment(environment);
-      return environment;
-    }
+    String joinedProfiles = activeProfiles.length > 0
+            ? String.join(", ", activeProfiles)
+            : "development (default)";
+
+    ensureAllowedProfile(activeProfiles);
+
+    echoSeparator();
+    echoGreen("✨ Starting server with active profile(s): " + joinedProfiles);
+    echoSeparator();
   }
 
-  public void verifyEnvironment(String environment) {
-    boolean isAllowed = false;
-    for (String allowedEnvironment : ALLOWED_ENVIRONMENTS) {
-      if (allowedEnvironment.equals(environment)) {
-        isAllowed = true;
-        break;
+  private void ensureAllowedProfile(String[] activeProfiles) {
+    if (activeProfiles.length == 0) return;
+
+    for (String profile : activeProfiles) {
+      for (String allowed : ALLOWED_ENVIRONMENTS) {
+        if (allowed.equals(profile)) {
+          return;
+        }
       }
     }
 
-    if (!isAllowed) {
-      throw new IllegalArgumentException("Environment \"" + environment + "\" not allowed. Please check the configuration.");
-    }
+    throw new IllegalArgumentException(
+            "🚨 None of the active profiles are allowed: " + String.join(", ", activeProfiles)
+    );
   }
 }
