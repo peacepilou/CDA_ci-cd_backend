@@ -8,28 +8,28 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "`order_item`") // "order" est un mot réservé en SQL
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItemEntity {
 
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String productName;
-    private int quantity;
-    private double unitPrice;
+  @Id
+  @GeneratedValue
+  private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    @Setter
-    private OrderEntity order;
+  private String productName;
+  private int quantity;
+  private double unitPrice;
 
-    public OrderItemEntity(String productName, int quantity, double unitPrice, OrderEntity order) {
-        this.productName = productName;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.order = order;
-    }
+  @ManyToOne
+  @JoinColumn(name = "order_id")
+  @Setter
+  private OrderEntity order;
+
+  public OrderItemEntity(String productName, int quantity, double unitPrice, OrderEntity order) {
+    this.productName = productName;
+    this.quantity = quantity;
+    this.unitPrice = unitPrice;
+    this.order = order;
+  }
 }

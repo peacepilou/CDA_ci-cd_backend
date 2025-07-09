@@ -41,9 +41,7 @@ public class InitLogger {
 
   public void logCurrentEnvironment(ApplicationContext context) {
     String[] activeProfiles = context.getEnvironment().getActiveProfiles();
-    String joinedProfiles = activeProfiles.length > 0
-            ? String.join(", ", activeProfiles)
-            : "development (default)";
+    String joinedProfiles = activeProfiles.length > 0 ? String.join(", ", activeProfiles) : "development (default)";
 
     ensureAllowedProfile(activeProfiles);
 
@@ -63,8 +61,6 @@ public class InitLogger {
       }
     }
 
-    throw new IllegalArgumentException(
-            "🚨 None of the active profiles are allowed: " + String.join(", ", activeProfiles)
-    );
+    throw new IllegalArgumentException("🚨 None of the active profiles are allowed: " + String.join(", ", activeProfiles));
   }
 }

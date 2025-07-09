@@ -14,28 +14,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired
+  private UserRepository userRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+  @Autowired
+  private BCryptPasswordEncoder passwordEncoder;
 
-    public User createUser(CreateUserDto request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new EmailAlreadyUsedException("This email address cannot be used");
-        }
-
-        String hashedPassword = passwordEncoder.encode(request.password());
-        User user = new User(request.name(), request.email(), hashedPassword);
-
-        UserEntity userEntity = UserMapper.toEntity(user);
-        UserEntity savedUser = userRepository.save(userEntity);
-        return UserMapper.toDomain(savedUser);
+  public User createUser(CreateUserDto request) {
+    if (userRepository.existsByEmail(request.email())) {
+      throw new EmailAlreadyUsedException("This email address cannot be used");
     }
 
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .map(UserMapper::toDomain)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
-    }
+    String hashedPassword = passwordEncoder.encode(request.password());
+    User user = new User(request.name(), request.email(), hashedPassword);
+
+    UserEntity userEntity = UserMapper.toEntity(user);
+    UserEntity savedUser = userRepository.save(userEntity);
+    return UserMapper.toDomain(savedUser);
+  }
+
+  public User getUserByEmail(String email) {
+    return userRepository
+      .findByEmail(email)
+      .map(UserMapper::toDomain)
+      .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+  }
 }
