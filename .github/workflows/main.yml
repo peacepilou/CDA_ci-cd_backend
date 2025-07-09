@@ -2,8 +2,11 @@ name: CI Pipeline for Spring Boot
 
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - development
+      - staging
+      - production
+
   pull_request:
     branches:
       - development
@@ -14,6 +17,9 @@ jobs:
   unit-tests:
     name: 🧪 Unit Tests
     runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' ||
+      github.event.pull_request.base.ref == 'development'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -38,6 +44,9 @@ jobs:
   integration-tests:
     name: 🔗 Integration Tests
     runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' ||
+      github.event.pull_request.base.ref == 'development'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -62,13 +71,15 @@ jobs:
   e2e-tests:
     name: 🚀 E2E Tests
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/production'
+    if: |
+      github.event_name == 'pull_request' &&
+      (github.event.pull_request.base.ref == 'staging' || github.event.pull_request.base.ref == 'production')
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Copy .env.ci to .env
-        run: cp .env.ci .env
+      - name: Copy .env.ci.e2e to .env
+        run: cp .env.ci.e2e .env
 
       - name: Set up Docker Compose for E2E
         run: docker-compose -f docker-compose.e2e.yml up -d
