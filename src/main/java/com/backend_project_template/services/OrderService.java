@@ -1,6 +1,5 @@
 package com.backend_project_template.services;
 
-
 import com.backend_project_template.domain.Order;
 import com.backend_project_template.domain.OrderItem;
 import com.backend_project_template.domain.User;
@@ -11,55 +10,51 @@ import com.backend_project_template.mappers.user.UserMapper;
 import com.backend_project_template.persistence.entities.UserEntity;
 import com.backend_project_template.persistence.repositories.OrderRepository;
 import com.backend_project_template.persistence.repositories.UserRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired
+  private OrderRepository orderRepository;
 
-    public void createOrder(CreateOrderRequest request) {
-        UserEntity userEntity = userRepository.findById(request.userId())
-                .orElseThrow(() -> new UserNotFoundException(request.userId()));
+  @Autowired
+  private UserRepository userRepository;
 
-        User user = UserMapper.toDomain(userEntity);
-        List<OrderItem> items = OrderItemMapper.toDomain(request.items());
-        user.placeOrder(items);
+  public void createOrder(CreateOrderRequest request) {
+    UserEntity userEntity = userRepository.findById(request.userId()).orElseThrow(() -> new UserNotFoundException(request.userId()));
 
-        UserEntity updatedUserEntity = UserMapper.toEntity(user);
-        userRepository.save(updatedUserEntity);
-    }
+    User user = UserMapper.toDomain(userEntity);
+    List<OrderItem> items = OrderItemMapper.toDomain(request.items());
+    user.placeOrder(items);
 
-    public Order getOrderById(Long orderId, String userEmail) {
-        UserEntity userEntity = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UserNotFoundException(userEmail));
+    UserEntity updatedUserEntity = UserMapper.toEntity(user);
+    userRepository.save(updatedUserEntity);
+  }
 
-        User user = UserMapper.toDomain(userEntity);
+  public Order getOrderById(Long orderId, String userEmail) {
+    UserEntity userEntity = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException(userEmail));
 
-        return user.getOrderById(orderId);
-    }
+    User user = UserMapper.toDomain(userEntity);
 
-    public List<Order> getOrdersByUserEmail(String email) {
-        UserEntity userEntity = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(email));
+    return user.getOrderById(orderId);
+  }
 
-        User user = UserMapper.toDomain(userEntity);
+  public List<Order> getOrdersByUserEmail(String email) {
+    UserEntity userEntity = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
 
-        return user.getOrders();
-    }
+    User user = UserMapper.toDomain(userEntity);
 
-    public void cancelOrder(Long orderId, String userEmail) {
-        UserEntity userEntity = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UserNotFoundException(userEmail));
+    return user.getOrders();
+  }
 
-       User user = UserMapper.toDomain(userEntity);
-       user.cancelOrder(orderId);
-       userRepository.save(UserMapper.toEntity(user));
-    }
+  public void cancelOrder(Long orderId, String userEmail) {
+    UserEntity userEntity = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException(userEmail));
+
+    User user = UserMapper.toDomain(userEntity);
+    user.cancelOrder(orderId);
+    userRepository.save(UserMapper.toEntity(user));
+  }
 }
