@@ -3,9 +3,9 @@ name: CI Pipeline for Spring Boot
 on:
   push:
     branches-ignore:
-      - development
       - staging
       - production
+      - development
 
   pull_request:
     branches:
@@ -17,9 +17,6 @@ jobs:
   unit-tests:
     name: 🧪 Unit Tests
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'push' ||
-      github.event.pull_request.base.ref == 'development'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -44,9 +41,6 @@ jobs:
   integration-tests:
     name: 🔗 Integration Tests
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'push' ||
-      github.event.pull_request.base.ref == 'development'
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -71,9 +65,8 @@ jobs:
   e2e-tests:
     name: 🚀 E2E Tests
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'pull_request' &&
-      (github.event.pull_request.base.ref == 'staging' || github.event.pull_request.base.ref == 'production')
+    if: github.event_name == 'pull_request' &&
+      (github.base_ref == 'staging' || github.base_ref == 'production')
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -82,7 +75,7 @@ jobs:
         run: cp .env.ci.e2e .env
 
       - name: Set up Docker Compose for E2E
-        run: docker-compose -f docker-compose.e2e.yml up -d
+        run: docker compose -f docker-compose.e2e.yml up -d
 
       - name: Wait for services
         run: sleep 25
@@ -91,4 +84,4 @@ jobs:
         run: mvn test -Pe2e-tests
 
       - name: Shut down Docker Compose
-        run: docker-compose -f docker-compose.e2e.yml down --volumes
+        run: docker compose -f docker-compose.e2e.yml down --volumes
