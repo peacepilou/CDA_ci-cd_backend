@@ -9,8 +9,6 @@ public class DatabaseInitializer {
 
   @Bean
   CommandLineRunner init() {
-    return args -> {
-
-    };
+    return args -> {};
   }
 }

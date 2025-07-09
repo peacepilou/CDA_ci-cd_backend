@@ -6,4 +6,4 @@ spring:
 
 
 cors:
-  allowedOrigins: ${CLIENT_URL_DEV}
+  allowedOrigins: ${CLIENT_URL_E2E}
