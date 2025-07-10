@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+  @Autowired
+  private AuthService authService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserReponseDto> register(@RequestBody CreateUserDto request) {
-        User user = authService.createUser(request);
-        UserReponseDto response = new UserReponseDto(user.getId(), user.getName(), user.getEmail());
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+  @PostMapping("/register")
+  public ResponseEntity<UserReponseDto> register(@RequestBody CreateUserDto request) {
+    User user = authService.createUser(request);
+    UserReponseDto response = new UserReponseDto(user.getId(), user.getName(), user.getEmail());
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
 
-    @GetMapping("/users/by-email")
-    public User getUserByEmail(@RequestParam String email) {
-        return authService.getUserByEmail(email);
-    }
+  @GetMapping("/users/by-email")
+  public User getUserByEmail(@RequestParam String email) {
+    return authService.getUserByEmail(email);
+  }
 }
