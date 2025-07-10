@@ -10,9 +10,9 @@
     </parent>
     <groupId>com</groupId>
     <artifactId>backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>backend_project_template</name>
-    <description>Backend project template for a clean base.</description>
+    <version>1.0.0</version>
+    <name>backend_e-shop-ci-cd</name>
+    <description>Backend for e-shop project demo for CI/CD</description>
     <url/>
     <licenses>
         <license/>
