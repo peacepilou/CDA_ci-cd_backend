@@ -69,13 +69,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 21
       - name: Copy .env
         run: cp .env.ci.e2e .env
       - name: Docker Compose up
-        run: docker compose -f docker-compose.e2e.yml up -d
+        run: docker compose -f docker-compose.e2e.yml --env-file .env up -d
       - name: Wait for DB
         run: sleep 25
       - name: Run E2E tests
