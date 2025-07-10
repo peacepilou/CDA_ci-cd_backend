@@ -1,16 +1,39 @@
 package com.backend_project_template.e2e;
 
-import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
+@Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ActiveProfiles("e2e")
 public class OrderE2ETest {
+
+    @Container
+    static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
+            .withDatabaseName("testdb")
+            .withUsername("testuser")
+            .withPassword("testpass");
+
+    @DynamicPropertySource
+    static void overrideProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mysql::getJdbcUrl);
+        registry.add("spring.datasource.username", mysql::getUsername);
+        registry.add("spring.datasource.password", mysql::getPassword);
+    }
+
+    @BeforeAll
+    static void configureRestAssured() {
+        baseURI = "http://localhost";
+        port = 8080;
+    }
 
     @Test
     void shouldRegisterUserAndCreateOrderAndRetrieveIt() {
@@ -26,10 +49,10 @@ public class OrderE2ETest {
         """.formatted(email);
 
         given()
-                .contentType(ContentType.JSON)
+                .contentType("application/json")
                 .body(registerBody)
                 .when()
-                .post("http://localhost:8080/auth/register")
+                .post("/auth/register")
                 .then()
                 .statusCode(201);
 
@@ -37,7 +60,7 @@ public class OrderE2ETest {
         Long userId = given()
                 .queryParam("email", email)
                 .when()
-                .get("http://localhost:8080/auth/users/by-email")
+                .get("/auth/users/by-email")
                 .then()
                 .statusCode(200)
                 .extract()
@@ -56,10 +79,10 @@ public class OrderE2ETest {
         """.formatted(userId);
 
         given()
-                .contentType(ContentType.JSON)
+                .contentType("application/json")
                 .body(orderBody)
                 .when()
-                .post("http://localhost:8080/orders")
+                .post("/orders")
                 .then()
                 .statusCode(201);
 
@@ -67,7 +90,7 @@ public class OrderE2ETest {
         given()
                 .queryParam("email", email)
                 .when()
-                .get("http://localhost:8080/orders/by-email")
+                .get("/orders/by-email")
                 .then()
                 .statusCode(200)
                 .body("$.size()", is(1))
