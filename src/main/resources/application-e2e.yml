@@ -1,9 +1,13 @@
 spring:
   datasource:
-    url: jdbc:mysql://${DB_HOST_E2E}:${DB_PORT_E2E}/${DB_NAME_E2E}?createDatabaseIfNotExist=true
-    username: ${DB_USER_E2E}
-    password: ${DB_PASSWORD_E2E}
+    url: jdbc:mysql://mysql:3307/testdb?createDatabaseIfNotExist=true
+    username: testuser
+    password: testpass
 
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
 
 cors:
-  allowedOrigins: ${CLIENT_URL_E2E}
+  allowedOrigins: http://localhost:4200
