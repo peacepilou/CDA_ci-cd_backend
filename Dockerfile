@@ -9,7 +9,7 @@ COPY checkstyle.xml ./checkstyle.xml
 
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
