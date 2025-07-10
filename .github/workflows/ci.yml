@@ -65,7 +65,7 @@ jobs:
   e2e-tests:
     name: 🚀 E2E Tests
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && (github.base_ref == 'staging' || github.base_ref == 'production')
+    if: github.event_name == 'pull_request' && ((github.base_ref == 'staging' && github.head_ref == 'development') || (github.base_ref == 'production' && github.head_ref == 'staging'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -76,20 +76,5 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Copy .env
-        run: cp .env.ci.e2e .env
-
-      - name: Log .env file contents
-        run: cat .env
-
-      - name: Docker Compose up
-        run: docker compose -f docker-compose.e2e.yml --env-file .env up -d
-
-      - name: Wait for DB
-        run: sleep 25
-
       - name: Run E2E tests
         run: mvn test -Pe2e-tests
-
-      - name: Docker Compose down
-        run: docker compose -f docker-compose.e2e.yml down --volumes

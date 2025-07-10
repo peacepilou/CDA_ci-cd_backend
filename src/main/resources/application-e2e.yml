@@ -4,6 +4,10 @@ spring:
     username: ${DB_USER_E2E}
     password: ${DB_PASSWORD_E2E}
 
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
 
 cors:
   allowedOrigins: ${CLIENT_URL_E2E}
