@@ -79,6 +79,9 @@ jobs:
       - name: Copy .env
         run: cp .env.ci.e2e .env
 
+      - name: Log .env file contents
+        run: cat .env
+
       - name: Docker Compose up
         run: docker compose -f docker-compose.e2e.yml --env-file .env up -d
 
