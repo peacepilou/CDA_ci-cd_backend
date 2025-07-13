@@ -41,10 +41,20 @@ jobs:
           push: true
           tags: peacepilou/spring-app:${{ steps.image_tag.outputs.tag }}
 
+      - name: Add SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_PRIVATE_KEY_CD_STAGING }}" > ~/.ssh/id_ed25519_staging
+          chmod 600 ~/.ssh/id_ed25519_staging
+
       - name: 🔐 Deploy to VPS via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519_${{ secrets.PROJECT_NAME }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << EOF
-            cd /home/${{ secrets.VPS_USER }}/backend/${{ steps.image_tag.outputs.tag }}
+          TAG=${{ steps.image_tag.outputs.tag }}
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519_staging ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << EOF
+            cd /home/${{ secrets.VPS_USER }}/backend/$TAG
             docker compose pull
             docker compose up -d
           EOF
+
+      - name: Clean SSH key
+        run: rm -f ~/.ssh/id_ed25519_staging
