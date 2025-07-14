@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
     <groupId>com</groupId>
-    <artifactId>backend</artifactId>
-    <version>1.0.0</version>
-    <name>backend_e-shop-ci-cd</name>
-    <description>Backend for e-shop project demo for CI/CD</description>
+        <artifactId>backend</artifactId>
+        <version>1.0.0</version>
+        <name>backend_e-shop-ci-cd</name>
+        <description>Backend for e-shop project demo for CI/CD</description>
     <url/>
     <licenses>
         <license/>
@@ -213,18 +213,6 @@
                     <configLocation>checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.4.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
