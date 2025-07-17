@@ -28,14 +28,15 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-
-      - name: Set Docker image tag
+      - name: Set Docker image tag and environment URL
         id: set_tag
         run: |
           if [[ "${GITHUB_REF##*/}" == "production" ]]; then
             echo "tag=production" >> "$GITHUB_OUTPUT"
+            echo "url=api.fromphacotoherofr" >> "$GITHUB_OUTPUT"
           else
             echo "tag=staging" >> "$GITHUB_OUTPUT"
+            echo "url=staging-api.fromphacotoherofr" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build and Push Docker image
@@ -61,8 +62,10 @@ jobs:
       - name: SSH to VPS and deploy
         run: |
           TAG=${{ needs.build-and-push.outputs.tag }}
+          URL=${{ needs.build-and-push.outputs.url }}
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519_staging ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << EOF
             cd /home/${{ secrets.VPS_USER }}/backend/$TAG
+            echo "Deploying to URL: $URL"
             docker compose pull
             docker compose up -d
           EOF
