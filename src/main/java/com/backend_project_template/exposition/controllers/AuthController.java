@@ -24,7 +24,9 @@ public class AuthController {
   }
 
   @GetMapping("/users/by-email")
-  public User getUserByEmail(@RequestParam String email) {
-    return authService.getUserByEmail(email);
+  public ResponseEntity<UserReponseDto> getUserByEmail(@RequestParam String email) {
+    User user = authService.getUserByEmail(email);
+    UserReponseDto response = new UserReponseDto(user.getId(), user.getName(), user.getEmail());
+    return ResponseEntity.ok(response);
   }
 }
